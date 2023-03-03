@@ -1,0 +1,39 @@
+## 思路
+暴力解法即遍历一遍计算每个数的平方后再排序
+时间复杂度为O(n + nlogn)
+双指针法：
+由于原数组是有序的，平方后的数据大小是两侧到中间逐渐减小的
+即每次从两侧比较中取出最大值，再向中间靠拢，即可得到有序新数组
+此时时间复杂度为O(n)
+
+## 注意
+数组的resize和reserve
+resize时，既改变了空间也创造了元素，所以可以通过[]访问或改变元素了；此时调用push_back会在末尾加入新元素；
+reserve时，仅预留了空间，没有创建元素，若通过[]访问，得到的是数组越界的地址，篡改内容属非授权行为，安全访问应使用.at；需调用push_back才会从头开始加入新元素。
+简单说reserve预留的内存，必须经过初始化操作（resize push_back insert）才可以通过[]访问，否则即是数组越界。
+
+```C++
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        std::vector<int> result;
+        result.resize(nums.size());
+        int cur = nums.size() - 1;
+        for (int i = 0, j = nums.size() - 1; i <= j;)
+        {
+            int tmpi = nums[i] * nums[i];
+            int tmpj = nums[j] * nums[j];
+            if (tmpi <= tmpj)
+            {
+                result[cur--] = tmpj;
+                j--;
+            }
+            else {
+                result[cur--] = tmpi;
+                i++;
+            }
+        }
+        return result;
+    }
+};
+```
